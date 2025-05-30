@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1028860044729",
+    "project_id": "fir-playground-276c6",
+    "storage_bucket": "fir-playground-276c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028860044729:android:17f7750520bc204997c268",
+        "android_client_info": {
+          "package_name": "com.eno.firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028860044729-43tvij3eksdnnabg1tmts0h76s9esicu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eno.firebase",
+            "certificate_hash": "36ad5e2c1e457662dd97eac66bcae6f5d2919ceb"
+          }
+        },
+        {
+          "client_id": "1028860044729-hjvtbps1317b0vmrh0moev75jguo8h1r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuN2M5vz2Cj9BnB4mLgfLBq3pQV-Jdh3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028860044729-hjvtbps1317b0vmrh0moev75jguo8h1r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
