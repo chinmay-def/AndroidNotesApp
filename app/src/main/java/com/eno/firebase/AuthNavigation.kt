@@ -23,7 +23,7 @@ fun AuthNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = if (authViewModel.uiState.value.isAuthenticated) "notes_list" else "login"
+        startDestination = if (authViewModel.uiState.value.isAuthenticated) "home" else "login"
     ) {
         composable("login") {
             LoginScreen(
@@ -34,7 +34,7 @@ fun AuthNavigation() {
                     }
                 },
                 onNavigateToHome = {
-                    navController.navigate("notes_list") {
+                    navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
                 }
@@ -50,54 +50,54 @@ fun AuthNavigation() {
                     }
                 },
                 onNavigateToHome = {
-                    navController.navigate("note_list") {
+                    navController.navigate("home") {
                         popUpTo("signup") { inclusive = true }
                     }
                 }
             )
         }
-
-        composable("notes_list") {
-            NotesListScreen(
-                onNavigateToEditor = { noteId ->
-                    if (noteId != null) {
-                        navController.navigate("note_editor/$noteId")
-                    } else {
-                        navController.navigate("note_editor")
+        composable("home") {
+            HomeScreen(
+                viewModel = authViewModel,
+                onNavigateToLogin = {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
                     }
                 }
             )
         }
-        composable(
-            "note_editor/{noteId}",
-            arguments = listOf(navArgument("noteId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val noteId = backStackEntry.arguments?.getString("noteId")
-            NoteEditorScreen(
-                noteId = noteId,
-                onNavigateBack = { navController.popBackStack() }
-            )
-        }
-
-        composable("note_editor") {
-            NoteEditorScreen(
-                noteId = null,
-                onNavigateBack = { navController.popBackStack() }
-            )
-        }
-
 
 
     }
 }
 
-//        composable("home") {
-//            HomeScreen(
-//                viewModel = authViewModel,
-//                onNavigateToLogin = {
-//                    navController.navigate("login") {
-//                        popUpTo("home") { inclusive = true }
-//                    }
-//                }
-//            )
+
+//
+//composable("notes_list") {
+//    NotesListScreen(
+//        onNavigateToEditor = { noteId ->
+//            if (noteId != null) {
+//                navController.navigate("note_editor/$noteId")
+//            } else {
+//                navController.navigate("note_editor")
+//            }
 //        }
+//    )
+//}
+//composable(
+//"note_editor/{noteId}",
+//arguments = listOf(navArgument("noteId") { type = NavType.StringType })
+//) { backStackEntry ->
+//    val noteId = backStackEntry.arguments?.getString("noteId")
+//    NoteEditorScreen(
+//        noteId = noteId,
+//        onNavigateBack = { navController.popBackStack() }
+//    )
+//}
+//
+//composable("note_editor") {
+//    NoteEditorScreen(
+//        noteId = null,
+//        onNavigateBack = { navController.popBackStack() }
+//    )
+//}
