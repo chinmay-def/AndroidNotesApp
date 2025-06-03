@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eno.firebase.data.GoogleSignInHelper
+import com.eno.firebase.screens.notes.NotesViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 
@@ -32,8 +33,11 @@ import com.google.android.gms.common.api.ApiException
 fun LoginScreen(
     viewModel: AuthViewModel,
     onNavigateToSignUp: () -> Unit,
-    onNavigateToHome: () -> Unit
+    onNavigateToHome: () -> Unit,
+    notesViewModel: NotesViewModel,
 ) {
+
+
     val uiState by viewModel.uiState
     val context = LocalContext.current
 
@@ -61,6 +65,7 @@ fun LoginScreen(
     LaunchedEffect(uiState.isAuthenticated) {
         if (uiState.isAuthenticated) {
             onNavigateToHome()
+            notesViewModel.startListeningToNotes()
         }
     }
 

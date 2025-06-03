@@ -2,14 +2,13 @@ package com.eno.firebase
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.eno.firebase.screens.auth.AuthViewModel
-import com.eno.firebase.screens.auth.HomeScreen
 import com.eno.firebase.screens.auth.LoginScreen
 import com.eno.firebase.screens.auth.SignUpScreen
 import com.eno.firebase.screens.notes.NoteEditorScreen
@@ -18,14 +17,25 @@ import com.eno.firebase.screens.notes.NotesViewModel
 
 
 @Composable
-fun AuthNavigation() {
+fun AuthNavigation(
+    authViewModel: AuthViewModel,
+    notesViewModel: NotesViewModel
+) {
     val navController = rememberNavController()
-    val authViewModel: AuthViewModel = viewModel()
-    val notesViewModel: NotesViewModel = viewModel()
+    val isAuthenticated = authViewModel.uiState.value.isAuthenticated
+
+    LaunchedEffect(isAuthenticated) {
+        if (!isAuthenticated) {
+            navController.navigate("login") {
+                popUpTo(0) { inclusive = true } // Clears entire back stack
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
-        startDestination = if (authViewModel.uiState.value.isAuthenticated) "home" else "login"
+        startDestination = "login"
+            //if (authViewModel.uiState.value.isAuthenticated) "home" else "login"
     ) {
         composable("login") {
             LoginScreen(
@@ -39,7 +49,8 @@ fun AuthNavigation() {
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
-                }
+                },
+                notesViewModel = notesViewModel
             )
         }
 
@@ -63,7 +74,7 @@ fun AuthNavigation() {
                 viewModel = notesViewModel,
                 onNavigateToEditor = { noteId ->
                     navController.navigate("editor/${noteId ?: "new"}")
-                }
+                }, navController = navController
             )
         }
         composable(
@@ -80,34 +91,3 @@ fun AuthNavigation() {
 
     }
 }
-
-
-
-//composable("notes_list") {
-//    NotesListScreen(
-//        onNavigateToEditor = { noteId ->
-//            if (noteId != null) {
-//                navController.navigate("note_editor/$noteId")
-//            } else {
-//                navController.navigate("note_editor")
-//            }
-//        }
-//    )
-//}
-//composable(
-//"note_editor/{noteId}",
-//arguments = listOf(navArgument("noteId") { type = NavType.StringType })
-//) { backStackEntry ->
-//    val noteId = backStackEntry.arguments?.getString("noteId")
-//    NoteEditorScreen(
-//        noteId = noteId,
-//        onNavigateBack = { navController.popBackStack() }
-//    )
-//}
-//
-//composable("note_editor") {
-//    NoteEditorScreen(
-//        noteId = null,
-//        onNavigateBack = { navController.popBackStack() }
-//    )
-//}

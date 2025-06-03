@@ -1,6 +1,7 @@
 package com.eno.firebase.data
 
 import android.content.Context
+import android.util.Log
 import com.eno.firebase.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -46,6 +47,8 @@ class AuthRepository {
         return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
             Result.success(result.user)
+
+
         } catch (e: Exception) {
             Result.failure(e)
         }

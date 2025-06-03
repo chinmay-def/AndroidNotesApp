@@ -14,7 +14,7 @@ class NotesRepository {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
 
-    private fun getCurrentUserId(): String? = auth.currentUser?.uid
+    fun getCurrentUserId(): String? = auth.currentUser?.uid
 
     // Create a new note
     suspend fun addNote(title: String, content: String, color: String = "#FFFFFF"): Result<String> {

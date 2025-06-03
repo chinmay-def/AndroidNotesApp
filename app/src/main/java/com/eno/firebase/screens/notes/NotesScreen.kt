@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.eno.firebase.data.Note
 import com.eno.firebase.screens.auth.AuthViewModel
 import java.text.SimpleDateFormat
@@ -29,8 +30,9 @@ import java.util.*
 @Composable
 fun NotesListScreen(
     viewModel: NotesViewModel = viewModel(),
-    viewModel2 :AuthViewModel = viewModel(),
-    onNavigateToEditor: (String?) -> Unit ,// null for new note, noteId for editing
+    viewModel2: AuthViewModel = viewModel(),
+    onNavigateToEditor: (String?) -> Unit,
+    navController: NavController// null for new note, noteId for editing
 
 ) {
     val notes by viewModel.notes
@@ -48,6 +50,10 @@ fun NotesListScreen(
             viewModel.clearError()
         }
     }
+    LaunchedEffect(Unit) {
+        viewModel.startListeningToNotes()
+    }
+
 
     Column(
         modifier = Modifier
@@ -55,16 +61,12 @@ fun NotesListScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         // Top App Bar with Search
-        TopAppBar(
-            title = { Text("My Notes") },
-            actions = {
-                IconButton(
-                    onClick = { isSearchActive = !isSearchActive }
-                ) {
-                    Icon(Icons.Default.Search, contentDescription = "Search")
-                }
+        TopAppBar(title = { Text("My Notes") }, actions = {
+            IconButton(
+                onClick = { isSearchActive = !isSearchActive }) {
+                Icon(Icons.Default.Search, contentDescription = "Search")
             }
-        )
+        })
 
         // Search Bar
         if (isSearchActive) {
@@ -91,8 +93,7 @@ fun NotesListScreen(
         // Loading indicator
         if (isLoading) {
             Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             }
@@ -108,8 +109,7 @@ fun NotesListScreen(
         if (notesToShow.isEmpty() && !isLoading) {
             // Empty state
             Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -146,28 +146,27 @@ fun NotesListScreen(
                     NoteCard(
                         note = note,
                         onClick = { onNavigateToEditor(note.id) },
-                        onDelete = { viewModel.deleteNote(note.id) }
-                    )
+                        onDelete = { viewModel.deleteNote(note.id) })
                 }
             }
         }
     }
-    Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.BottomStart){
+    //Sign out button
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
         Button(onClick = {
             viewModel2.signOut()
-        }) {
+            navController.navigate("login")
+        }, modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)) {
             Text("SignOut")
         }
     }
 
     // Floating Action Button
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
     ) {
         FloatingActionButton(
-            onClick = { onNavigateToEditor(null) },
-            modifier = Modifier.padding(16.dp)
+            onClick = { onNavigateToEditor(null) }, modifier = Modifier.padding(16.dp)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Add Note")
         }
@@ -177,9 +176,7 @@ fun NotesListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteCard(
-    note: Note,
-    onClick: () -> Unit,
-    onDelete: () -> Unit
+    note: Note, onClick: () -> Unit, onDelete: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -236,8 +233,7 @@ fun NoteCard(
 
                 Row {
                     IconButton(
-                        onClick = onClick,
-                        modifier = Modifier.size(32.dp)
+                        onClick = onClick, modifier = Modifier.size(32.dp)
                     ) {
                         Icon(
                             Icons.Default.Edit,
@@ -247,8 +243,7 @@ fun NoteCard(
                     }
 
                     IconButton(
-                        onClick = { showDeleteDialog = true },
-                        modifier = Modifier.size(32.dp)
+                        onClick = { showDeleteDialog = true }, modifier = Modifier.size(32.dp)
                     ) {
                         Icon(
                             Icons.Default.Delete,
@@ -273,8 +268,7 @@ fun NoteCard(
                     onClick = {
                         onDelete()
                         showDeleteDialog = false
-                    }
-                ) {
+                    }) {
                     Text("Delete", color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -282,8 +276,7 @@ fun NoteCard(
                 TextButton(onClick = { showDeleteDialog = false }) {
                     Text("Cancel")
                 }
-            }
-        )
+            })
     }
 }
 

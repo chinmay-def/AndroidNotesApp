@@ -32,7 +32,14 @@ class NotesViewModel : ViewModel() {
         startListeningToNotes()
     }
 
-    private fun startListeningToNotes() {
+    fun startListeningToNotes() {
+        notesListener?.remove() // Always clear previous listener
+        val userId = repository.getCurrentUserId()
+        if (userId == null) {
+            _notes.value = emptyList()
+            return
+        }
+
         notesListener = repository.listenToUserNotes { notesList ->
             _notes.value = notesList
         }
