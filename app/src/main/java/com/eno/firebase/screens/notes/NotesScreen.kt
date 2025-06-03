@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eno.firebase.data.Note
+import com.eno.firebase.screens.auth.AuthViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,6 +29,7 @@ import java.util.*
 @Composable
 fun NotesListScreen(
     viewModel: NotesViewModel = viewModel(),
+    viewModel2 :AuthViewModel = viewModel(),
     onNavigateToEditor: (String?) -> Unit ,// null for new note, noteId for editing
 
 ) {
@@ -148,6 +150,13 @@ fun NotesListScreen(
                     )
                 }
             }
+        }
+    }
+    Box(modifier = Modifier.fillMaxSize(),contentAlignment = Alignment.BottomStart){
+        Button(onClick = {
+            viewModel2.signOut()
+        }) {
+            Text("SignOut")
         }
     }
 

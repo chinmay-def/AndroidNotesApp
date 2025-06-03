@@ -14,12 +14,14 @@ import com.eno.firebase.screens.auth.LoginScreen
 import com.eno.firebase.screens.auth.SignUpScreen
 import com.eno.firebase.screens.notes.NoteEditorScreen
 import com.eno.firebase.screens.notes.NotesListScreen
+import com.eno.firebase.screens.notes.NotesViewModel
 
 
 @Composable
 fun AuthNavigation() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
+    val notesViewModel: NotesViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -57,22 +59,30 @@ fun AuthNavigation() {
             )
         }
         composable("home") {
-            HomeScreen(
-                viewModel = authViewModel,
-                onNavigateToLogin = {
-                    navController.navigate("login") {
-                        popUpTo("home") { inclusive = true }
-                    }
+            NotesListScreen(
+                viewModel = notesViewModel,
+                onNavigateToEditor = { noteId ->
+                    navController.navigate("editor/${noteId ?: "new"}")
                 }
             )
         }
-
+        composable(
+            route = "editor/{noteId}",
+            arguments = listOf(navArgument("noteId") { defaultValue = "new" })
+        ) { backStackEntry ->
+            val noteId = backStackEntry.arguments?.getString("noteId")
+            NoteEditorScreen(
+                noteId = if (noteId == "new") null else noteId,
+                viewModel = notesViewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
 
     }
 }
 
 
-//
+
 //composable("notes_list") {
 //    NotesListScreen(
 //        onNavigateToEditor = { noteId ->
